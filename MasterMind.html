@@ -1,0 +1,121 @@
+
+<html lang="en">
+	<head>
+    
+		<!--192.168.8.184:5500-->
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>MasterMind</title>
+		
+		<script>
+			zähler = 0;
+			zähler2 = 0;
+			firstTime = true;
+			zählerAbgleich = 0;
+			zellen = Array();
+			tops = 0;
+			gut = 0;
+			randomColors = Array(4);
+			//const randomColors = ["blue", "red", "yellow", "green"];
+			const allColors = ["blue", "red", "yellow", "green", "pink", "orange"];
+			
+			function randomizeColors() {
+				nextColor = Math.floor(Math.random() * 6); 
+				randomColors[0] = allColors[nextColor];
+				for(i = 1; i < 4; i++) {
+					nextColor = Math.floor(Math.random() * 6);
+					while(randomColors.includes(allColors[nextColor])) {
+						nextColor = Math.floor(Math.random() * 6);
+					}
+					randomColors[i] = allColors[nextColor];
+				}
+			}
+			
+			randomizeColors();
+			console.log(randomColors);
+			
+			function SetColor() {
+				
+				farbWert = document.getElementById("dropdown").value;
+				farbName = document.getElementById("dropdown").value;
+				
+				if(zähler == 4 || firstTime) {
+					firstTime = false;
+					zähler = 0;
+					zähler2 = 0;
+					console.log("zähler und zähler2 resettet");
+					var tr = table.insertRow();
+					for (i = 0; i < 6; i++){
+						zellen[i] = tr.insertCell(i);
+						zellen[i].innerHTML = "_";
+					}
+				}
+				
+				for(i = 0; i < 4; i++) {
+					if(farbWert == randomColors[i]) {
+						console.log("Zähler2: " + zähler2 + "verglichen mit i: " + i);
+						if(zähler2 == i) {
+							tops++;
+						}
+						else {
+							gut++; //Wenn man die selbe Farbe mehrfach auswählt wird sie mehrfach als richtig angesehen zB. 4x rot = 4x richtig
+						}
+					}
+					console.log("Top: " + tops + " Gut: " + gut);
+
+				}
+				
+				if (zähler == 3) {
+						zellen[4].innerHTML = tops;
+						zellen[5].innerHTML = gut;
+						if(tops == 4) {
+							//reveal c1-c4
+							for(i = 0; i < 4; i++) {
+								document.getElementById("c" + i).innerHTML = randomColors[i];
+							}
+						}
+					gut = 0;
+					console.log("gut resettet");
+					tops = 0;
+					console.log("tops resettet");
+					zähler2 = 0;
+					console.log("zähler2 resettet");
+				}
+				
+				zellen[zähler].style.background = farbWert;
+				zellen[zähler].innerHTML = farbName;
+				console.log("farbwert: " + farbWert + " farbName: " + farbName);
+				zähler++;
+				zähler2++;
+				
+				document.getElementById("dropdown").options[0].selected = 'selected';
+				
+			}
+		</script>
+    </head>
+	<body>
+		<table id="table">
+			<tbody>
+				<tr>
+					<td id = "c0">Farbe1</td>
+					<td id = "c1">Farbe2</td>
+					<td id = "c2">Farbe3</td>
+					<td id = "c3">Farbe4</td>
+					<td>Anzahl richtige Stellen</td>
+					<td>Anzahl richtige Farben</td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+		<select id = "dropdown" onchange = "SetColor()">
+					<option selected disabled hidden value = "default"> default </option>
+					<option value = "blue"> blue </option>
+					<option value = "orange"> orange </option>
+					<option value = "yellow"> yellow </option>
+					<option value = "green"> green </option>
+					<option value = "red"> red </option>
+					<option value = "pink"> pink </option>
+		</select>
+	</body>
+</html>
